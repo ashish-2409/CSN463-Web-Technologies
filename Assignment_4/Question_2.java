@@ -1,9 +1,9 @@
 class Employee{
     // declaring all the variables required for each employee
-    String name;
-    int yearOfJoining;
-    int salary;
-    String address;
+    private String name;
+    private int yearOfJoining;
+    private int salary;
+    private String address;
 
     // constructor to initialize the object with the given values
     Employee(String name,int yearOfJoining,int salary,String address){
