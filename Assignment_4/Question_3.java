@@ -26,79 +26,127 @@ class Number{// creating the Number class
     public boolean isEven(){
         return (num%2==0);
     }
-    public boolean isPrime(){
-        for(int i=2;i<num;i++){
-            if(num%i==0)return false; //if num is divisible by any number other than 1 and num then it is not prime
+    public boolean isPrime(){// checking if integral part of num is prime or not
+        for(int i=2;i<(int)num;i++){
+            if((int)num%i==0)return false; //if num is divisible by any number other than 1 and num then it is not prime
         }
         return true;
     }
     public boolean isArmstrong(){// Armstrong number is a number that is equal to the sum of cubes of its digits
+        // checking if integral part of num is armstrong or not
         int n=(int)num,sum=0;
         while(n>0){
             int x=n%10;
             sum+=(x*x*x);// finding sum of cubes of its digits
             n=n/10;
         }
-        return (sum==num);// returning if num is armstrong
+        return (sum==(int)num);// returning if num is armstrong
     }
 
 
     // functions with the double return type
     public double getFactorial(){
         double ans=1;
-        for(int i=1;i<=num;i++){
-            ans=ans*i;// getting the factorial of num
+        for(int i=1;i<=(int)num;i++){
+            ans=ans*i;// getting the factorial of integral part of num
         }
         return ans;
     }
     public double getSqrt(){
-        double ans=1;
-        int n=(int)num;
-        while(ans*ans<=n){
-            ans++;// finding the largest ans that is > the square root of num
+        int start = 0, end = (int)num;
+        double ans=0;// to store the answer
+        // now computing the integral part of the square root using binary search
+        while (start <= end) {
+            int mid = (start + end) / 2;
+            if (mid * mid == num) {
+                ans = mid;
+                break;
+            }
+            if (mid * mid < num) {// if it is on right end
+                start = mid + 1;
+                ans = mid;
+            }
+            else {// if it is on left end
+                end = mid - 1;
+            }
         }
-        return ans-1;// returning the square root of num which is ans-1
+        // For computing the fractional part of square root upto given precision
+        float inc = 0.1f;
+        for (int i = 0; i < 2; i++) {
+            while (ans * ans <= num) {
+                ans += inc;
+            }
+            // loop runs til ans * ans <= number
+            ans = ans - inc;
+            inc= inc / 10;// adding the next fractional part
+        }
+        return ans;
+
     }
     public double getSqr(){
         return (num*num);// return the square of num
     }
-    public double sumDigits(){
+    public double sumDigits(){// getting sum of num
         double ans=0;
-        int n=(int)num;
-        while(n>0){
-            ans+=(n%10);// adding the last digit of n
-            n/=10;// removing the last digit of n
+        String s=String.valueOf(num);// converting to string
+        for(int i=0;i<s.length();i++){
+            if(s.charAt(i)=='.')continue;// getting the sum except of the . in num
+            ans+=(s.charAt(i)-'0');// getting the integer value of the character
         }
-        return ans;// return sum of digits
+        return ans;
     }
-    public double getReverse(){
-        int ans=0;
-        int n=(int)num;
-        while(n>0){
-            ans=ans*10+(n%10);// this steps reverses the current digit of n
-            n/=10;
-        }
-        return ans;// returns the reversed num
+    public double getReverse(){// using strings to reverse the double num
+        String s = String.valueOf(num);// converting double to string
+        String reversed = new StringBuffer(s).reverse().toString();// reversing string
+        return Double.parseDouble(reversed);// converting reversed string back to double
     }
 
     // methods with void return type
-    public void listFactors(){// to print all the factors of num
-        for(int i=1;i<=num;i++){
-            if(num%i==0)// if i is a factor of num print it
-                System.out.print(i+" ");
+    public void listFactors(){// to print all the factors of integral part of num
+        for(int i=1;i<=((int)num);i++){
+            if((int)num%i==0)// if i is a factor of num print it
+            {
+                System.out.print(i + " ");
+            }
         }
         System.out.println();
     }
     public void dispBinary(){// to display the binary representation of num
-        StringBuffer ans= new StringBuffer();// storing the binary representation in a StringBuffer as ans
-        int n=(int)num;
-        while(n>0){// iteratively calculating the binary representation
-            if(n%2==1) ans.append("1");// if as bit is odd the add '1'
-            else ans.append("0"); // else add '0'
-            n/=2;
+        StringBuffer ans = new StringBuffer();
+        // taking the integral part of decimal number
+        int Integral = (int)num;
+        // taking the fractional part decimal number
+        double fractional = num - Integral;
+        // converting the integral part to binary
+        while (Integral>0)
+        {
+            if(Integral%2==0)
+            ans.append('0');
+            else
+              ans.append('1');
+            Integral /= 2;
         }
-        ans.reverse(); // reverse the ans StringBuffer
-        System.out.println(ans);// printing the final ans
+        // Reverse string to get original binary
+        ans.reverse();
+        // Append point before conversion of fractional part
+        ans.append('.');
+        // Conversion of fractional part to binary equivalent
+        // for fractional part we keep multiplying the fraction part and the depending upon the integral part of it
+        //we append either 0 or 1 to it
+        for(int i=0;i<5;i++)// upto 5 decimal places
+        {
+            // Find next bit in fraction
+            fractional *= 2;
+            int fract_bit = (int)fractional;
+            if (fract_bit == 1)
+            {
+                fractional -= fract_bit;
+                ans.append('1');
+            }
+            else
+                ans.append('0');
+        }
+        System.out.println(ans);
     }
 }
 public class Question_3 {
@@ -117,7 +165,7 @@ public class Question_3 {
         System.out.println("Calling getSqrt() method "+n.getSqrt());
         System.out.println("Calling getSqr() method "+n.getSqr());
         System.out.println("Calling sumDigits() method "+n.sumDigits());
-        System.out.println("Calling getReverse() method "+(int)(n.getReverse()));
+        System.out.println("Calling getReverse() method "+n.getReverse());
         System.out.println("Calling listFactor() method ");
         n.listFactors();
         System.out.println("Calling dispBinary() method ");
